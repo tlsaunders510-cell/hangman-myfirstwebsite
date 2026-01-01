@@ -417,160 +417,186 @@
   </main>
 
   <script>
-    // Simple word list: you can add/edit these
-    const WORDS = [
-      { word: "moon", hint: "You see it in the night sky." },
-      { word: "galaxy", hint: "A huge system of stars." },
-      { word: "teacher", hint: "Works in a classroom." },
-      { word: "computer", hint: "You are using one now." },
-      { word: "javascript", hint: "Language this game uses." },
-      { word: "hangman", hint: "The game you are playing." },
-      { word: "library", hint: "A quiet place full of books." },
-      { word: "puzzle", hint: "A little problem to solve." },
-      { word: "notebook", hint: "You can write in it." },
-      { word: "holiday", hint: "Time away from work or school." }
-    ];
+  // WORD DATABASE – this will be loaded from words.json
+  let WORDS = [];
 
-    const MAX_WRONG_GUESSES = 6;
+  const MAX_WRONG_GUESSES = 6;
 
-    const wordEl = document.getElementById("word");
-    const statusEl = document.getElementById("status");
-    const keyboardEl = document.getElementById("keyboard");
-    const messageEl = document.getElementById("message");
-    const livesTextEl = document.getElementById("lives-text");
-    const hintTextEl = document.getElementById("hint-text");
-    const newGameBtn = document.getElementById("new-game-btn");
-    const figureParts = Array.from(
-      document.querySelectorAll(".figure-part")
-    );
+  const wordEl = document.getElementById("word");
+  const statusEl = document.getElementById("status");
+  const keyboardEl = document.getElementById("keyboard");
+  const messageEl = document.getElementById("message");
+  const livesTextEl = document.getElementById("lives-text");
+  const hintTextEl = document.getElementById("hint-text");
+  const newGameBtn = document.getElementById("new-game-btn");
+  const figureParts = Array.from(
+    document.querySelectorAll(".figure-part")
+  );
 
-    let currentWord = "";
-    let currentHint = "";
-    let correctLetters = new Set();
-    let guessedLetters = new Set();
-    let wrongGuesses = 0;
-    let gameOver = false;
+  let currentWord = "";
+  let currentHint = "";
+  let correctLetters = new Set();
+  let guessedLetters = new Set();
+  let wrongGuesses = 0;
+  let gameOver = false;
 
-    function pickRandomWord() {
-      const random = WORDS[Math.floor(Math.random() * WORDS.length)];
-      return random;
-    }
+  // 🔹 Load words from words.json
+  async function loadWords() {
+    try {
+      const response = await fetch("words.json");
+      if (!response.ok) {
+        throw new Error("Failed to load words.json");
+      }
+      const data = await response.json();
 
-    function setupKeyboard() {
-      keyboardEl.innerHTML = "";
-      const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-      letters.forEach((letter) => {
-        const btn = document.createElement("button");
-        btn.textContent = letter;
-        btn.className = "key";
-        btn.addEventListener("click", () => handleGuess(letter, btn));
-        keyboardEl.appendChild(btn);
-      });
-    }
-
-    function updateWordDisplay() {
-      wordEl.innerHTML = "";
-      currentWord.split("").forEach((letter) => {
-        const span = document.createElement("span");
-        span.className = "letter-box";
-        if (letter === " ") {
-          span.textContent = " ";
-          span.style.borderBottom = "none";
-        } else if (correctLetters.has(letter)) {
-          span.textContent = letter;
-          span.classList.add("revealed");
-        } else {
-          span.textContent = "";
-        }
-        wordEl.appendChild(span);
-      });
-    }
-
-    function updateStatus() {
-      statusEl.innerHTML = `
-        Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}
-      `;
-      livesTextEl.textContent = `Lives: ${MAX_WRONG_GUESSES - wrongGuesses}`;
-      figureParts.forEach((part, index) => {
-        if (index < wrongGuesses) {
-          part.classList.add("visible");
-        } else {
-          part.classList.remove("visible");
-        }
-      });
-    }
-
-    function checkWin() {
-      return currentWord
-        .split("")
-        .filter((c) => c !== " ")
-        .every((c) => correctLetters.has(c));
-    }
-
-    function endGame(win) {
-      gameOver = true;
-      const answerHtml = `<span class="answer">${currentWord}</span>`;
-
-      if (win) {
-        messageEl.innerHTML = `You win! The word was ${answerHtml}.`;
-        messageEl.className = "message win";
-      } else {
-        messageEl.innerHTML = `You lost. The word was ${answerHtml}.`;
-        messageEl.className = "message lose";
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error("words.json is empty or invalid");
       }
 
-      // Disable all keys
-      keyboardEl.querySelectorAll("button").forEach((btn) => {
-        btn.disabled = true;
-      });
+      WORDS = data;
+      console.log(`Loaded ${WORDS.length} words.`);
+      startNewGame();
+    } catch (error) {
+      console.error(error);
+      messageEl.textContent = "Error loading word list. Using fallback words.";
+      messageEl.className = "message lose";
+
+      // Fallback minimal list if something goes wrong
+      WORDS = [
+        { word: "fallback", hint: "Fallback word list." },
+        { word: "error", hint: "Something went wrong loading words." }
+      ];
+      startNewGame();
+    }
+  }
+
+  function pickRandomWord() {
+    const random = WORDS[Math.floor(Math.random() * WORDS.length)];
+    return random;
+  }
+
+  function setupKeyboard() {
+    keyboardEl.innerHTML = "";
+    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+    letters.forEach((letter) => {
+      const btn = document.createElement("button");
+      btn.textContent = letter;
+      btn.className = "key";
+      btn.addEventListener("click", () => handleGuess(letter, btn));
+      keyboardEl.appendChild(btn);
+    });
+  }
+
+  function updateWordDisplay() {
+    wordEl.innerHTML = "";
+    currentWord.split("").forEach((letter) => {
+      const span = document.createElement("span");
+      span.className = "letter-box";
+      if (letter === " ") {
+        span.textContent = " ";
+        span.style.borderBottom = "none";
+      } else if (correctLetters.has(letter)) {
+        span.textContent = letter;
+        span.classList.add("revealed");
+      } else {
+        span.textContent = "";
+      }
+      wordEl.appendChild(span);
+    });
+  }
+
+  function updateStatus() {
+    statusEl.innerHTML = `
+      Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}
+    `;
+    livesTextEl.textContent = `Lives: ${MAX_WRONG_GUESSES - wrongGuesses}`;
+    figureParts.forEach((part, index) => {
+      if (index < wrongGuesses) {
+        part.classList.add("visible");
+      } else {
+        part.classList.remove("visible");
+      }
+    });
+  }
+
+  function checkWin() {
+    return currentWord
+      .split("")
+      .filter((c) => c !== " ")
+      .every((c) => correctLetters.has(c));
+  }
+
+  function endGame(win) {
+    gameOver = true;
+    const answerHtml = `<span class="answer">${currentWord}</span>`;
+
+    if (win) {
+      messageEl.innerHTML = `You win! The word was ${answerHtml}.`;
+      messageEl.className = "message win";
+    } else {
+      messageEl.innerHTML = `You lost. The word was ${answerHtml}.`;
+      messageEl.className = "message lose";
     }
 
-    function handleGuess(letter, btn) {
-      if (gameOver || guessedLetters.has(letter)) return;
-      guessedLetters.add(letter);
-
-      const isCorrect = currentWord.includes(letter);
-      if (isCorrect) {
-        correctLetters.add(letter);
-        btn.classList.add("correct");
-      } else {
-        wrongGuesses++;
-        btn.classList.add("wrong");
-      }
-
+    keyboardEl.querySelectorAll("button").forEach((btn) => {
       btn.disabled = true;
-      updateWordDisplay();
-      updateStatus();
+    });
+  }
 
-      if (checkWin()) {
-        endGame(true);
-      } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
-        endGame(false);
-      }
+  function handleGuess(letter, btn) {
+    if (gameOver || guessedLetters.has(letter)) return;
+    guessedLetters.add(letter);
+
+    const isCorrect = currentWord.includes(letter);
+    if (isCorrect) {
+      correctLetters.add(letter);
+      btn.classList.add("correct");
+    } else {
+      wrongGuesses++;
+      btn.classList.add("wrong");
     }
 
-    function startNewGame() {
-      const { word, hint } = pickRandomWord();
-      currentWord = word.toLowerCase();
-      currentHint = hint;
-      correctLetters = new Set();
-      guessedLetters = new Set();
-      wrongGuesses = 0;
-      gameOver = false;
+    btn.disabled = true;
+    updateWordDisplay();
+    updateStatus();
 
-      hintTextEl.textContent = `Hint: ${currentHint}`;
-      messageEl.textContent = "Guess the word by choosing letters.";
-      messageEl.className = "message";
+    if (checkWin()) {
+      endGame(true);
+    } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
+      endGame(false);
+    }
+  }
 
-      setupKeyboard();
-      updateWordDisplay();
-      updateStatus();
+  function startNewGame() {
+    if (!WORDS || WORDS.length === 0) {
+      messageEl.textContent = "No words available.";
+      messageEl.className = "message lose";
+      return;
     }
 
-    newGameBtn.addEventListener("click", startNewGame);
+    const { word, hint } = pickRandomWord();
+    currentWord = word.toLowerCase();
+    currentHint = hint || "No hint available.";
+    correctLetters = new Set();
+    guessedLetters = new Set();
+    wrongGuesses = 0;
+    gameOver = false;
 
-    // Start first game when page loads
-    startNewGame();
-  </script>
+    hintTextEl.textContent = `Hint: ${currentHint}`;
+    messageEl.textContent = "Guess the word by choosing letters.";
+    messageEl.className = "message";
+
+    setupKeyboard();
+    updateWordDisplay();
+    updateStatus();
+  }
+
+  newGameBtn.addEventListener("click", startNewGame);
+
+  // 🔹 Start everything by loading the word list
+  loadWords();
+</script>
+
+
 </body>
 </html>
