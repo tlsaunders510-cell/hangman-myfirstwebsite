@@ -126,7 +126,7 @@
   { "word": "polar bear", "hint": "White bear from cold regions." },
   { "word": "shark", "hint": "Large fish with sharp teeth." },
   { "word": "dolphin", "hint": "Intelligent ocean animal." },
-  { "word": "whale", "hint": "Largest animal on Earth." }
+  { "word": "whale", "hint": "Largest animal on Earth." },
 { "word": "backpack", "hint": "You carry books or supplies in it." },
 { "word": "sandcastle", "hint": "You build this at the beach." },
 { "word": "sunflower", "hint": "A tall yellow plant that follows the sun." },
@@ -319,7 +319,7 @@
 { "word": "exam", "hint": "Big test at school." },
 { "word": "subject", "hint": "Type of study like math or science." },
 { "word": "knowledge", "hint": "Information learned over time." },
-{ "word": "success", "hint": "Achieving your goal." }
+{ "word": "success", "hint": "Achieving your goal." },
 { "word": "anchor", "hint": "Heavy object used to stop boats moving." },
 { "word": "harpoon", "hint": "Spear-like tool used for hunting at sea." },
 { "word": "lifeboat", "hint": "Used to rescue people from ships." },
@@ -472,7 +472,7 @@
 { "word": "graduation", "hint": "Ceremony marking end of school." },
 { "word": "degree", "hint": "Award earned from studying." },
 { "word": "knowledge", "hint": "Information learned over time." },
-{ "word": "success", "hint": "Achieving a goal." }
+
 { "word": "harvest moon", "hint": "A bright full moon seen in autumn." },
 { "word": "windmill", "hint": "Rotating structure powered by wind." },
 { "word": "greenhouse", "hint": "Glass building for growing plants." },
