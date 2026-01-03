@@ -1,5 +1,3 @@
-
-
 <!doctype html> 
 <html lang="en">
 <head>
@@ -645,55 +643,6 @@ function startTimerForCurrentDifficulty() {
     }
   }
 
-function startNewGame() {
-  if (!WORDS || WORDS.length === 0) {
-    messageEl.textContent = "No words available.";
-    messageEl.className = "message lose";
-    return;
-  }
-
-  const { word, hint } = pickRandomWord();
-  currentWord = word.toLowerCase();
-  currentHint = hint || "No hint available.";
-
-  correctLetters = new Set();
-  guessedLetters = new Set();
-  wrongGuesses = 0;
-  gameOver = false;
-
-  hintTextEl.textContent = `Hint: ${currentHint}`;
-  messageEl.textContent = "Guess the word by choosing letters.";
-  messageEl.className = "message";
-
-  setupKeyboard();
-  updateWordDisplay();
-  updateStatus();
-
- 
-  startTimerForCurrentDifficulty();
-}
-
-    const { word, hint } = pickRandomWord();
-    currentWord = word.toLowerCase();
-    currentHint = hint || "No hint available.";
-    correctLetters = new Set();
-    guessedLetters = new Set();
-    wrongGuesses = 0;
-    gameOver = false;
-
-    hintTextEl.textContent = `Hint: ${currentHint}`;
-    messageEl.textContent = "Guess the word by choosing letters.";
-    messageEl.className = "message";
-
-    setupKeyboard();
-    updateWordDisplay();
-    updateStatus();
-  }
-
-  difficultyE1.addEventListener("change", startNewGame);
-
-  // 🔹 Start everything by loading the word list
-  loadWords();
 </script>
 
 
