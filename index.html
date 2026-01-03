@@ -1,8 +1,8 @@
-<!doctype html> 
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Hangman Game</title>
+  <title>Hangman</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -14,11 +14,10 @@
       --text: #e5e7eb;
       --muted: #9ca3af;
       --error: #f97373;
+      --win: #4ade80;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -27,23 +26,19 @@
       align-items: center;
       justify-content: center;
       padding: 16px;
-      background:
-        radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 50%, #000 100%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: var(--text);
     }
 
     .game {
       width: 100%;
-      max-width: 640px;
+      max-width: 760px;
       background: radial-gradient(circle at top left, #020617 0, #020617 70%);
       border-radius: 24px;
       padding: 24px 20px 20px;
-      box-shadow:
-        0 18px 60px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(148, 163, 184, 0.08);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.75), 0 0 0 1px rgba(148,163,184,0.08);
+      border: 1px solid rgba(148,163,184,0.25);
     }
 
     .game-header {
@@ -51,7 +46,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     h1 {
@@ -62,7 +57,7 @@
       color: var(--muted);
     }
 
-    .lives {
+    .pill {
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.35);
@@ -75,9 +70,11 @@
       gap: 6px;
       background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(4px);
+      user-select: none;
+      white-space: nowrap;
     }
 
-    .lives-dot {
+    .pill-dot {
       width: 6px;
       height: 6px;
       border-radius: 999px;
@@ -87,69 +84,38 @@
 
     .board {
       display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1.15fr);
       gap: 20px;
       align-items: stretch;
     }
 
-    @media (max-width: 640px) {
-      .board {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    @media (max-width: 720px) {
+      .board { grid-template-columns: 1fr; }
     }
 
-    /* Hangman visual */
-    .hangman {
+    .panel {
       border-radius: 18px;
       padding: 14px 16px 16px;
       background: radial-gradient(circle at top, #020617 0, #020617 80%);
       border: 1px solid rgba(55, 65, 81, 0.8);
-      position: relative;
-      overflow: hidden;
     }
 
+    /* Hangman visual */
     .gallows {
       height: 180px;
       position: relative;
+      margin-bottom: 8px;
     }
 
-    .gallows-base,
-    .gallows-pole,
-    .gallows-top,
-    .gallows-rope {
+    .gallows-base, .gallows-pole, .gallows-top, .gallows-rope {
       position: absolute;
       background: linear-gradient(180deg, #4b5563, #020617);
       border-radius: 999px;
     }
-
-    .gallows-base {
-      bottom: 8px;
-      left: 16px;
-      right: 16px;
-      height: 6px;
-    }
-
-    .gallows-pole {
-      left: 36px;
-      bottom: 14px;
-      width: 6px;
-      height: 130px;
-    }
-
-    .gallows-top {
-      left: 38px;
-      top: 16px;
-      height: 6px;
-      width: 80px;
-    }
-
-    .gallows-rope {
-      left: 110px;
-      top: 22px;
-      width: 2px;
-      height: 24px;
-      background: linear-gradient(180deg, #e5e7eb, #6b7280);
-    }
+    .gallows-base { bottom: 8px; left: 16px; right: 16px; height: 6px; }
+    .gallows-pole { left: 36px; bottom: 14px; width: 6px; height: 130px; }
+    .gallows-top  { left: 38px; top: 16px; height: 6px; width: 80px; }
+    .gallows-rope { left: 110px; top: 22px; width: 2px; height: 24px; background: linear-gradient(180deg, #e5e7eb, #6b7280); }
 
     .figure-part {
       position: absolute;
@@ -158,68 +124,21 @@
       opacity: 0;
       transition: opacity 0.2s ease-out;
     }
-
-    .figure-part.visible {
-      opacity: 1;
-    }
-
-    .head {
-      top: 46px;
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      border: 3px solid #e5e7eb;
-      box-shadow: 0 0 12px rgba(148, 163, 184, 0.5);
-    }
-
-    .body {
-      top: 76px;
-      width: 3px;
-      height: 46px;
-      background: #e5e7eb;
-    }
-
-    .arm-left,
-    .arm-right,
-    .leg-left,
-    .leg-right {
-      width: 3px;
-      height: 26px;
-      background: #e5e7eb;
-      transform-origin: top;
-    }
-
-    .arm-left {
-      top: 82px;
-      left: 102px;
-      transform: rotate(-30deg);
-    }
-
-    .arm-right {
-      top: 82px;
-      left: 118px;
-      transform: rotate(30deg);
-    }
-
-    .leg-left {
-      top: 120px;
-      left: 104px;
-      transform: rotate(-22deg);
-    }
-
-    .leg-right {
-      top: 120px;
-      left: 116px;
-      transform: rotate(22deg);
-    }
+    .figure-part.visible { opacity: 1; }
+    .head { top: 46px; width: 32px; height: 32px; border-radius: 999px; border: 3px solid #e5e7eb; box-shadow: 0 0 12px rgba(148,163,184,0.5); }
+    .body { top: 76px; width: 3px; height: 46px; background: #e5e7eb; }
+    .arm-left, .arm-right, .leg-left, .leg-right { width: 3px; height: 26px; background: #e5e7eb; transform-origin: top; }
+    .arm-left { top: 82px; left: 102px; transform: rotate(-30deg); }
+    .arm-right { top: 82px; left: 118px; transform: rotate(30deg); }
+    .leg-left { top: 120px; left: 104px; transform: rotate(-22deg); }
+    .leg-right { top: 120px; left: 116px; transform: rotate(22deg); }
 
     .hint {
-      margin-top: 8px;
-      font-size: 0.8rem;
+      margin: 0;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
-    /* Word display */
     .word-wrapper {
       border-radius: 18px;
       padding: 14px 14px 16px;
@@ -257,12 +176,8 @@
       font-size: 0.85rem;
       color: var(--muted);
     }
+    .status strong { color: var(--accent); }
 
-    .status strong {
-      color: var(--accent);
-    }
-
-    /* Keyboard */
     .keyboard {
       margin-top: 16px;
       display: grid;
@@ -279,8 +194,7 @@
       text-transform: uppercase;
       cursor: pointer;
       color: var(--text);
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
-        border-color 0.1s ease-out, background 0.1s ease-out;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, border-color 0.1s ease-out;
       user-select: none;
     }
 
@@ -290,35 +204,18 @@
       border-color: rgba(148, 163, 184, 1);
     }
 
-    .key:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    .key.correct {
-      background: radial-gradient(circle at top, rgba(22, 163, 74, 0.4), #064e3b);
-      border-color: #22c55e;
-    }
-
-    .key.wrong {
-      background: radial-gradient(circle at top, rgba(127, 29, 29, 0.6), #111827);
-      border-color: rgba(248, 113, 113, 0.9);
-      color: #fecaca;
-    }
-
-    .key:disabled {
-      opacity: 0.85;
-      cursor: default;
-    }
+    .key:disabled { opacity: 0.85; cursor: default; }
+    .key.correct { border-color: #22c55e; }
+    .key.wrong { border-color: rgba(248,113,113,0.9); color: #fecaca; }
 
     .footer {
       margin-top: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
@@ -335,54 +232,37 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
-        border-color 0.1s ease-out, background 0.1s ease-out;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, border-color 0.1s ease-out;
       white-space: nowrap;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.85);
-      border-color: var(--accent);
-    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(15, 23, 42, 0.85); border-color: var(--accent); }
+    .btn:active { transform: translateY(0); box-shadow: none; }
 
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
+    .message { font-size: 0.95rem; color: var(--muted); }
+    .message.win { color: var(--win); }
+    .message.lose { color: var(--error); }
 
-    .message {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .message.win {
-      color: #4ade80;
-    }
-
-    .message.lose {
-      color: var(--error);
-    }
-
-    .answer {
-      font-weight: 600;
-      color: #e5e7eb;
-      text-transform: uppercase;
+    select.btn {
+      appearance: none;
+      padding: 7px 34px 7px 12px;
+      position: relative;
     }
   </style>
 </head>
+
 <body>
   <main class="game">
     <div class="game-header">
       <h1>Hangman</h1>
-      <div class="lives">
-        <span class="lives-dot"></span>
+      <div class="pill" title="Lives remaining">
+        <span class="pill-dot"></span>
         <span id="lives-text">Lives: 6</span>
       </div>
     </div>
 
     <div class="board">
-      <section class="hangman" aria-hidden="true">
+      <section class="panel" aria-hidden="true">
         <div class="gallows">
           <div class="gallows-base"></div>
           <div class="gallows-pole"></div>
@@ -404,247 +284,295 @@
           <div class="word" id="word"></div>
           <div class="status" id="status"></div>
         </div>
+
         <div class="keyboard" id="keyboard"></div>
       </section>
     </div>
-<div class="footer">
-  <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-    <label style="display:flex; gap:8px; align-items:center;">
-      <span style="letter-spacing:0.1em; text-transform:uppercase; font-size:0.75rem; color: var(--muted);">
-        Difficulty
-      </span>
-      <select id="difficulty" class="btn" style="padding:7px 10px;">
-        <option value="easy">Easy</option>
-        <option value="medium" selected>Medium</option>
-        <option value="hard">Hard</option>
-      </select>
-    </label>
 
-    <div class="lives" title="Time left">
-      <span class="lives-dot"></span>
-      <span id="timer-text">Time: --</span>
+    <div class="footer">
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <label style="display:flex; gap:8px; align-items:center;">
+          <span style="letter-spacing:0.1em; text-transform:uppercase; font-size:0.75rem; color: var(--muted);">
+            Difficulty
+          </span>
+          <select id="difficulty" class="btn">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </label>
+
+        <div class="pill" title="Time left">
+          <span class="pill-dot"></span>
+          <span id="timer-text">Time: --</span>
+        </div>
+      </div>
+
+      <button class="btn" id="new-game-btn">New word</button>
+
+      <div class="message" id="message"></div>
     </div>
-  </div>
-
-  <button class="btn" id="new-game-btn">
-    <span>New word</span>
-  </button>
-
-  <div class="message" id="message"></div>
-</div>
- 
   </main>
 
   <script>
-  // WORD DATABASE – this will be loaded from words.json
-  let WORDS = [];
+    // Words loaded from words.json in same folder as index.html
+    let WORDS = [];
 
-  const MAX_WRONG_GUESSES = 6;
+    const MAX_WRONG_GUESSES = 6;
 
-  const wordEl = document.getElementById("word");
-  const statusEl = document.getElementById("status");
-  const keyboardEl = document.getElementById("keyboard");
-  const messageEl = document.getElementById("message");
-  const livesTextEl = document.getElementById("lives-text");
-  const hintTextEl = document.getElementById("hint-text");
-  const newGameBtn = document.getElementById("new-game-btn");
-  const difficultyEl = document.getElementById("difficulty");
-  const timerTextEl = document.getElementById("timer-text");
+    const DIFFICULTY = {
+      easy:   { minLen: 3,  maxLen: 5,  seconds: 90 },
+      medium: { minLen: 6,  maxLen: 8,  seconds: 60 },
+      hard:   { minLen: 9,  maxLen: 14, seconds: 45 }
+    };
 
-const DIFFICULTY = {
-  easy:   { minLen: 3,  maxLen: 5,  seconds: 90 },
-  medium: { minLen: 6,  maxLen: 8,  seconds: 60 },
-  hard:   { minLen: 9,  maxLen: 14, seconds: 45 }
-};
+    // DOM
+    const wordEl = document.getElementById("word");
+    const statusEl = document.getElementById("status");
+    const keyboardEl = document.getElementById("keyboard");
+    const messageEl = document.getElementById("message");
+    const livesTextEl = document.getElementById("lives-text");
+    const hintTextEl = document.getElementById("hint-text");
+    const newGameBtn = document.getElementById("new-game-btn");
+    const difficultyEl = document.getElementById("difficulty");
+    const timerTextEl = document.getElementById("timer-text");
+    const figureParts = Array.from(document.querySelectorAll(".figure-part"));
 
-let timerId = null;
-let timeLeft = 0;
-  const figureParts = Array.from(
-    document.querySelectorAll(".figure-part")
-  );
+    // State
+    let currentWord = "";
+    let currentHint = "";
+    let correctLetters = new Set();
+    let guessedLetters = new Set();
+    let wrongGuesses = 0;
+    let gameOver = false;
 
-  let currentWord = "";
-  let currentHint = "";
-  let correctLetters = new Set();
-  let guessedLetters = new Set();
-  let wrongGuesses = 0;
-  let gameOver = false;
+    let timerId = null;
+    let timeLeft = 0;
 
-  // 🔹 Load words from words.json
-  async function loadWords() {
-    try {
-      const response = await fetch("words.json");
-      if (!response.ok) {
-        throw new Error("Failed to load words.json");
-      }
-      const data = await response.json();
-
-      if (!Array.isArray(data) || data.length === 0) {
-        throw new Error("words.json is empty or invalid");
-      }
-
-      WORDS = data;
-      console.log(`Loaded ${WORDS.length} words.`);
-      startNewGame();
-    } catch (error) {
-      console.error(error);
-      messageEl.textContent = "Error loading word list. Using fallback words.";
-      messageEl.className = "message lose";
-
-      // Fallback minimal list if something goes wrong
-      WORDS = [
-        { word: "fallback", hint: "Fallback word list." },
-        { word: "error", hint: "Something went wrong loading words." }
-      ];
-      startNewGame();
+    function normalizedLength(word) {
+      // Count letters only (ignore spaces/hyphens)
+      return word.replace(/[^a-z]/gi, "").length;
     }
-  }
-function normalizedLength(word) {
-  return word.replace(/[^a-z]/gi, "").length;
-}
 
-function getFilteredWordsByDifficulty() {
-  const level = difficultyEl?.value || "medium";
-  const cfg = DIFFICULTY[level] || DIFFICULTY.medium;
+    function getDifficultyConfig() {
+      const level = difficultyEl?.value || "medium";
+      return DIFFICULTY[level] || DIFFICULTY.medium;
+    }
 
-  const filtered = WORDS.filter((item) => {
-    if (!item?.word) return false;
-    const len = normalizedLength(item.word.toLowerCase());
-    return len >= cfg.minLen && len <= cfg.maxLen;
-  });
+    function getFilteredWordsByDifficulty() {
+      const cfg = getDifficultyConfig();
+      const filtered = WORDS.filter((item) => {
+        if (!item || typeof item.word !== "string") return false;
+        const len = normalizedLength(item.word.toLowerCase());
+        return len >= cfg.minLen && len <= cfg.maxLen;
+      });
+      return filtered.length > 0 ? filtered : WORDS;
+    }
 
-  return filtered.length > 0 ? filtered : WORDS;
-}
+    function pickRandomWord() {
+      const pool = getFilteredWordsByDifficulty();
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+      return chosen;
+    }
 
-function stopTimer() {
-  if (timerId) {
-    clearInterval(timerId);
-    timerId = null;
-  }
-}
+    function setupKeyboard() {
+      keyboardEl.innerHTML = "";
+      const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
-function startTimerForCurrentDifficulty() {
-  stopTimer();
+      letters.forEach((letter) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = letter;
+        btn.className = "key";
+        btn.addEventListener("click", () => handleGuess(letter, btn));
+        keyboardEl.appendChild(btn);
+      });
+    }
 
-  const level = difficultyEl?.value || "medium";
-  const cfg = DIFFICULTY[level] || DIFFICULTY.medium;
+    function updateWordDisplay() {
+      wordEl.innerHTML = "";
 
-  timeLeft = cfg.seconds;
-  timerTextEl.textContent = `Time: ${timeLeft}s`;
+      currentWord.split("").forEach((ch) => {
+        const span = document.createElement("span");
+        span.className = "letter-box";
 
-  timerId = setInterval(() => {
-    timeLeft--;
-    timerTextEl.textContent = `Time: ${timeLeft}s`;
+        if (ch === " ") {
+          span.textContent = " ";
+          span.style.borderBottom = "none";
+        } else if (correctLetters.has(ch)) {
+          span.textContent = ch;
+          span.classList.add("revealed");
+        } else {
+          span.textContent = "";
+        }
 
-    if (timeLeft <= 0) {
+        wordEl.appendChild(span);
+      });
+    }
+
+    function updateStatus() {
+      statusEl.innerHTML = `Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}`;
+      livesTextEl.textContent = `Lives: ${MAX_WRONG_GUESSES - wrongGuesses}`;
+
+      figureParts.forEach((part, idx) => {
+        part.classList.toggle("visible", idx < wrongGuesses);
+      });
+    }
+
+    function checkWin() {
+      return currentWord
+        .split("")
+        .filter((c) => c !== " ")
+        .every((c) => correctLetters.has(c));
+    }
+
+    function stopTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+    }
+
+    function startTimerForCurrentDifficulty() {
       stopTimer();
-      if (!gameOver) {
+      const cfg = getDifficultyConfig();
+
+      timeLeft = cfg.seconds;
+      timerTextEl.textContent = `Time: ${timeLeft}s`;
+
+      timerId = setInterval(() => {
+        timeLeft -= 1;
+        timerTextEl.textContent = `Time: ${timeLeft}s`;
+
+        if (timeLeft <= 0) {
+          stopTimer();
+          if (!gameOver) {
+            messageEl.textContent = "Time's up!";
+            messageEl.className = "message lose";
+            endGame(false);
+          }
+        }
+      }, 1000);
+    }
+
+    function endGame(win) {
+      stopTimer();
+      gameOver = true;
+
+      const answerHtml = `<span class="answer">${currentWord}</span>`;
+      if (win) {
+        messageEl.innerHTML = `You win! The word was ${answerHtml}.`;
+        messageEl.className = "message win";
+      } else {
+        messageEl.innerHTML = `You lost. The word was ${answerHtml}.`;
+        messageEl.className = "message lose";
+      }
+
+      keyboardEl.querySelectorAll("button").forEach((b) => (b.disabled = true));
+    }
+
+    function handleGuess(letter, btn) {
+      if (gameOver) return;
+      if (guessedLetters.has(letter)) return;
+
+      guessedLetters.add(letter);
+
+      const isCorrect = currentWord.includes(letter);
+      if (isCorrect) {
+        correctLetters.add(letter);
+        if (btn) btn.classList.add("correct");
+      } else {
+        wrongGuesses += 1;
+        if (btn) btn.classList.add("wrong");
+      }
+
+      if (btn) btn.disabled = true;
+
+      updateWordDisplay();
+      updateStatus();
+
+      if (checkWin()) {
+        endGame(true);
+      } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
         endGame(false);
       }
     }
-  }, 1000);
-}
-    
- function pickRandomWord() {
-  const pool = getFilteredWordsByDifficulty();
-  return pool[Math.floor(Math.random() * pool.length)];
-}
 
-  function setupKeyboard() {
-    keyboardEl.innerHTML = "";
-    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-    letters.forEach((letter) => {
-      const btn = document.createElement("button");
-      btn.textContent = letter;
-      btn.className = "key";
-      btn.addEventListener("click", () => handleGuess(letter, btn));
-      keyboardEl.appendChild(btn);
-    });
-  }
-
-  function updateWordDisplay() {
-    wordEl.innerHTML = "";
-    currentWord.split("").forEach((letter) => {
-      const span = document.createElement("span");
-      span.className = "letter-box";
-      if (letter === " ") {
-        span.textContent = " ";
-        span.style.borderBottom = "none";
-      } else if (correctLetters.has(letter)) {
-        span.textContent = letter;
-        span.classList.add("revealed");
-      } else {
-        span.textContent = "";
+    function startNewGame() {
+      if (!WORDS || WORDS.length === 0) {
+        messageEl.textContent = "No words available.";
+        messageEl.className = "message lose";
+        timerTextEl.textContent = "Time: --";
+        return;
       }
-      wordEl.appendChild(span);
-    });
-  }
 
-  function updateStatus() {
-    statusEl.innerHTML = `
-      Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}
-    `;
-    livesTextEl.textContent = `Lives: ${MAX_WRONG_GUESSES - wrongGuesses}`;
-    figureParts.forEach((part, index) => {
-      if (index < wrongGuesses) {
-        part.classList.add("visible");
-      } else {
-        part.classList.remove("visible");
+      const picked = pickRandomWord();
+      const w = (picked?.word || "").toString();
+      const h = (picked?.hint || "").toString();
+
+      currentWord = w.toLowerCase();
+      currentHint = h || "No hint available.";
+
+      correctLetters = new Set();
+      guessedLetters = new Set();
+      wrongGuesses = 0;
+      gameOver = false;
+
+      hintTextEl.textContent = `Hint: ${currentHint}`;
+      messageEl.textContent = "Guess the word by choosing letters.";
+      messageEl.className = "message";
+
+      setupKeyboard();
+      updateWordDisplay();
+      updateStatus();
+      startTimerForCurrentDifficulty();
+    }
+
+    async function loadWords() {
+      try {
+        const response = await fetch("words.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to load words.json");
+
+        const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          throw new Error("words.json is empty or invalid");
+        }
+
+        WORDS = data;
+        console.log(`Loaded ${WORDS.length} words.`);
+        startNewGame();
+      } catch (err) {
+        console.error(err);
+        messageEl.textContent = "Error loading word list. Using fallback words.";
+        messageEl.className = "message lose";
+
+        WORDS = [
+          { word: "fallback", hint: "Fallback word list." },
+          { word: "error", hint: "Something went wrong loading words." }
+        ];
+        startNewGame();
       }
+    }
+
+    // Buttons
+    newGameBtn.addEventListener("click", startNewGame);
+    difficultyEl.addEventListener("change", startNewGame);
+
+    // Physical keyboard support
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+
+      const letter = e.key.toLowerCase();
+      if (!/^[a-z]$/.test(letter)) return;
+
+      const btn = Array.from(keyboardEl.querySelectorAll("button"))
+        .find(b => b.textContent === letter);
+
+      if (btn && !btn.disabled) btn.click();
     });
-  }
 
-  function checkWin() {
-    return currentWord
-      .split("")
-      .filter((c) => c !== " ")
-      .every((c) => correctLetters.has(c));
-  }
-
-  function endGame(win) {
-    stopTimer();
-    gameOver = true;
-    const answerHtml = `<span class="answer">${currentWord}</span>`;
-
-    if (win) {
-      messageEl.innerHTML = `You win! The word was ${answerHtml}.`;
-      messageEl.className = "message win";
-    } else {
-      messageEl.innerHTML = `You lost. The word was ${answerHtml}.`;
-      messageEl.className = "message lose";
-    }
-
-    keyboardEl.querySelectorAll("button").forEach((btn) => {
-      btn.disabled = true;
-    });
-  }
-
-  function handleGuess(letter, btn) {
-    if (gameOver || guessedLetters.has(letter)) return;
-    guessedLetters.add(letter);
-
-    const isCorrect = currentWord.includes(letter);
-    if (isCorrect) {
-      correctLetters.add(letter);
-      btn.classList.add("correct");
-    } else {
-      wrongGuesses++;
-      btn.classList.add("wrong");
-    }
-
-    btn.disabled = true;
-    updateWordDisplay();
-    updateStatus();
-
-    if (checkWin()) {
-      endGame(true);
-    } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
-      endGame(false);
-    }
-  }
-
-</script>
-
-
+    // Start
+    loadWords();
+  </script>
 </body>
 </html>
