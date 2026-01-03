@@ -409,13 +409,32 @@
         <div class="keyboard" id="keyboard"></div>
       </section>
     </div>
+<div class="footer">
+  <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+    <label style="display:flex; gap:8px; align-items:center;">
+      <span style="letter-spacing:0.1em; text-transform:uppercase; font-size:0.75rem; color: var(--muted);">
+        Difficulty
+      </span>
+      <select id="difficulty" class="btn" style="padding:7px 10px;">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
 
-    <div class="footer">
-      <button class="btn" id="new-game-btn">
-        <span>New word</span>
-      </button>
-      <div class="message" id="message"></div>
+    <div class="lives" title="Time left">
+      <span class="lives-dot"></span>
+      <span id="timer-text">Time: --</span>
     </div>
+  </div>
+
+  <button class="btn" id="new-game-btn">
+    <span>New word</span>
+  </button>
+
+  <div class="message" id="message"></div>
+</div>
+ 
   </main>
 
   <script>
@@ -431,6 +450,17 @@
   const livesTextEl = document.getElementById("lives-text");
   const hintTextEl = document.getElementById("hint-text");
   const newGameBtn = document.getElementById("new-game-btn");
+  const difficultyEl = document.getElementById("difficulty");
+  const timerTextEl = document.getElementById("timer-text");
+
+const DIFFICULTY = {
+  easy:   { minLen: 3,  maxLen: 5,  seconds: 90 },
+  medium: { minLen: 6,  maxLen: 8,  seconds: 60 },
+  hard:   { minLen: 9,  maxLen: 14, seconds: 45 }
+};
+
+let timerId = null;
+let timeLeft = 0;
   const figureParts = Array.from(
     document.querySelectorAll(".figure-part")
   );
@@ -471,11 +501,56 @@
       startNewGame();
     }
   }
+function normalizedLength(word) {
+  return word.replace(/[^a-z]/gi, "").length;
+}
 
-  function pickRandomWord() {
-    const random = WORDS[Math.floor(Math.random() * WORDS.length)];
-    return random;
+function getFilteredWordsByDifficulty() {
+  const level = difficultyEl?.value || "medium";
+  const cfg = DIFFICULTY[level] || DIFFICULTY.medium;
+
+  const filtered = WORDS.filter((item) => {
+    if (!item?.word) return false;
+    const len = normalizedLength(item.word.toLowerCase());
+    return len >= cfg.minLen && len <= cfg.maxLen;
+  });
+
+  return filtered.length > 0 ? filtered : WORDS;
+}
+
+function stopTimer() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
   }
+}
+
+function startTimerForCurrentDifficulty() {
+  stopTimer();
+
+  const level = difficultyEl?.value || "medium";
+  const cfg = DIFFICULTY[level] || DIFFICULTY.medium;
+
+  timeLeft = cfg.seconds;
+  timerTextEl.textContent = `Time: ${timeLeft}s`;
+
+  timerId = setInterval(() => {
+    timeLeft--;
+    timerTextEl.textContent = `Time: ${timeLeft}s`;
+
+    if (timeLeft <= 0) {
+      stopTimer();
+      if (!gameOver) {
+        endGame(false);
+      }
+    }
+  }, 1000);
+}
+    
+ function pickRandomWord() {
+  const pool = getFilteredWordsByDifficulty();
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
   function setupKeyboard() {
     keyboardEl.innerHTML = "";
@@ -529,6 +604,7 @@
   }
 
   function endGame(win) {
+    stopTimer();
     gameOver = true;
     const answerHtml = `<span class="answer">${currentWord}</span>`;
 
@@ -569,12 +645,33 @@
     }
   }
 
-  function startNewGame() {
-    if (!WORDS || WORDS.length === 0) {
-      messageEl.textContent = "No words available.";
-      messageEl.className = "message lose";
-      return;
-    }
+function startNewGame() {
+  if (!WORDS || WORDS.length === 0) {
+    messageEl.textContent = "No words available.";
+    messageEl.className = "message lose";
+    return;
+  }
+
+  const { word, hint } = pickRandomWord();
+  currentWord = word.toLowerCase();
+  currentHint = hint || "No hint available.";
+
+  correctLetters = new Set();
+  guessedLetters = new Set();
+  wrongGuesses = 0;
+  gameOver = false;
+
+  hintTextEl.textContent = `Hint: ${currentHint}`;
+  messageEl.textContent = "Guess the word by choosing letters.";
+  messageEl.className = "message";
+
+  setupKeyboard();
+  updateWordDisplay();
+  updateStatus();
+
+ 
+  startTimerForCurrentDifficulty();
+}
 
     const { word, hint } = pickRandomWord();
     currentWord = word.toLowerCase();
@@ -593,7 +690,7 @@
     updateStatus();
   }
 
-  newGameBtn.addEventListener("click", startNewGame);
+  difficultyE1.addEventListener("change", startNewGame);
 
   // 🔹 Start everything by loading the word list
   loadWords();
