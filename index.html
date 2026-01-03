@@ -377,7 +377,18 @@
 
     function setupKeyboard() {
       keyboardEl.innerHTML = "";
+      console.log("setupKeyboard() ran");
       const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+
+      letters.forEach((letter) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = letter;
+        btn.className = "key";
+        btn.addEventListener("click", () => handleGuess(letter, btn));
+        keyboardEl.appendChild(btn);
+      });
+    }      const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
       letters.forEach((letter) => {
         const btn = document.createElement("button");
