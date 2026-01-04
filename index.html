@@ -416,6 +416,35 @@
     </div>
   </main>
 <script>
+const STORAGE_KEYS = {
+  TIMER_ENABLED: "hangman_timer_enabled",
+  TIMER_SECONDS: "hangman_timer_seconds"
+};
+
+function saveTimerSettings() {
+  localStorage.setItem(
+    STORAGE_KEYS.TIMER_ENABLED,
+    timerEnabledEl.checked ? "1" : "0"
+  );
+  localStorage.setItem(
+    STORAGE_KEYS.TIMER_SECONDS,
+    timerSecondsEl.value
+  );
+}
+
+function loadTimerSettings() {
+  const enabled = localStorage.getItem(STORAGE_KEYS.TIMER_ENABLED);
+  const seconds = localStorage.getItem(STORAGE_KEYS.TIMER_SECONDS);
+
+  if (enabled !== null) {
+    timerEnabledEl.checked = enabled === "1";
+  }
+
+  if (seconds !== null && !isNaN(seconds)) {
+    timerSecondsEl.value = seconds;
+  }
+}
+  
   // We will load this from words.json
   let WORDS = [];
 
