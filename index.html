@@ -497,6 +497,57 @@ function loadTimerSettings() {
   let guessedLetters = new Set();
   let wrongGuesses = 0;
   let gameOver = false;
+  // --- TIMER STATE ---
+let timerId = null;
+let timeLeft = 0;
+let timerStarted = false;
+
+function clearTimer() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+  timerStarted = false;
+}
+
+function renderTimer() {
+  if (!timerEnabledEl.checked) {
+    timerTextEl.textContent = "⏱️ --";
+    return;
+  }
+  timerTextEl.textContent = `⏱️ ${timeLeft}s`;
+}
+
+function startTimerIfNeeded() {
+  // Only start if enabled, not already started, and game is active
+  if (!timerEnabledEl.checked) return;
+  if (gameOver) return;
+  if (timerStarted) return;
+
+  // Read seconds from input (with safety)
+  const seconds = parseInt(timerSecondsEl.value, 10);
+  timeLeft = Number.isFinite(seconds) ? Math.max(5, seconds) : 60;
+
+  timerStarted = true;
+  renderTimer();
+
+  timerId = setInterval(() => {
+    if (gameOver) {
+      clearTimer();
+      return;
+    }
+
+    timeLeft -= 1;
+    renderTimer();
+
+    if (timeLeft <= 0) {
+      clearTimer();
+      endGame(false); // time ran out
+      messageEl.innerHTML = `⏰ Time's up! The word was <span class="answer">${currentWord}</span>.`;
+      messageEl.className = "message lose";
+    }
+  }, 1000);
+}
 
   async function loadWords() {
     try {
