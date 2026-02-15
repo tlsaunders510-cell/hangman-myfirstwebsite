@@ -16,9 +16,7 @@
       --error: #f97373;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -93,9 +91,7 @@
     }
 
     @media (max-width: 640px) {
-      .board {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      .board { grid-template-columns: minmax(0, 1fr); }
     }
 
     /* Hangman visual */
@@ -108,10 +104,7 @@
       overflow: hidden;
     }
 
-    .gallows {
-      height: 180px;
-      position: relative;
-    }
+    .gallows { height: 180px; position: relative; }
 
     .gallows-base,
     .gallows-pole,
@@ -122,26 +115,9 @@
       border-radius: 999px;
     }
 
-    .gallows-base {
-      bottom: 8px;
-      left: 16px;
-      right: 16px;
-      height: 6px;
-    }
-
-    .gallows-pole {
-      left: 36px;
-      bottom: 14px;
-      width: 6px;
-      height: 130px;
-    }
-
-    .gallows-top {
-      left: 38px;
-      top: 16px;
-      height: 6px;
-      width: 80px;
-    }
+    .gallows-base { bottom: 8px; left: 16px; right: 16px; height: 6px; }
+    .gallows-pole { left: 36px; bottom: 14px; width: 6px; height: 130px; }
+    .gallows-top { left: 38px; top: 16px; height: 6px; width: 80px; }
 
     .gallows-rope {
       left: 110px;
@@ -158,10 +134,7 @@
       opacity: 0;
       transition: opacity 0.2s ease-out;
     }
-
-    .figure-part.visible {
-      opacity: 1;
-    }
+    .figure-part.visible { opacity: 1; }
 
     .head {
       top: 46px;
@@ -172,52 +145,21 @@
       box-shadow: 0 0 12px rgba(148, 163, 184, 0.5);
     }
 
-    .body {
-      top: 76px;
-      width: 3px;
-      height: 46px;
-      background: #e5e7eb;
-    }
+    .body { top: 76px; width: 3px; height: 46px; background: #e5e7eb; }
 
-    .arm-left,
-    .arm-right,
-    .leg-left,
-    .leg-right {
+    .arm-left,.arm-right,.leg-left,.leg-right {
       width: 3px;
       height: 26px;
       background: #e5e7eb;
       transform-origin: top;
     }
 
-    .arm-left {
-      top: 82px;
-      left: 102px;
-      transform: rotate(-30deg);
-    }
+    .arm-left { top: 82px; left: 102px; transform: rotate(-30deg); }
+    .arm-right { top: 82px; left: 118px; transform: rotate(30deg); }
+    .leg-left { top: 120px; left: 104px; transform: rotate(-22deg); }
+    .leg-right { top: 120px; left: 116px; transform: rotate(22deg); }
 
-    .arm-right {
-      top: 82px;
-      left: 118px;
-      transform: rotate(30deg);
-    }
-
-    .leg-left {
-      top: 120px;
-      left: 104px;
-      transform: rotate(-22deg);
-    }
-
-    .leg-right {
-      top: 120px;
-      left: 116px;
-      transform: rotate(22deg);
-    }
-
-    .hint {
-      margin-top: 8px;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
+    .hint { margin-top: 8px; font-size: 0.8rem; color: var(--muted); }
 
     /* Word display */
     .word-wrapper {
@@ -253,14 +195,8 @@
       text-shadow: 0 0 8px rgba(56, 189, 248, 0.9);
     }
 
-    .status {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .status strong {
-      color: var(--accent);
-    }
+    .status { font-size: 0.85rem; color: var(--muted); }
+    .status strong { color: var(--accent); }
 
     /* Keyboard */
     .keyboard {
@@ -290,10 +226,7 @@
       border-color: rgba(148, 163, 184, 1);
     }
 
-    .key:active:not(:disabled) {
-      transform: translateY(0);
-      box-shadow: none;
-    }
+    .key:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
 
     .key.correct {
       background: radial-gradient(circle at top, rgba(22, 163, 74, 0.4), #064e3b);
@@ -306,10 +239,7 @@
       color: #fecaca;
     }
 
-    .key:disabled {
-      opacity: 0.85;
-      cursor: default;
-    }
+    .key:disabled { opacity: 0.85; cursor: default; }
 
     .footer {
       margin-top: 16px;
@@ -346,23 +276,11 @@
       border-color: var(--accent);
     }
 
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
+    .btn:active { transform: translateY(0); box-shadow: none; }
 
-    .message {
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .message.win {
-      color: #4ade80;
-    }
-
-    .message.lose {
-      color: var(--error);
-    }
+    .message { font-size: 0.9rem; color: var(--muted); }
+    .message.win { color: #4ade80; }
+    .message.lose { color: var(--error); }
 
     .answer {
       font-weight: 600;
@@ -373,40 +291,40 @@
 </head>
 <body>
   <main class="game">
-  <div class="game-header">
-  <h1>Hangman</h1>
+    <div class="game-header">
+      <h1>Hangman</h1>
 
-  <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
-    <!-- Lives -->
-    <div class="lives">
-      <span class="lives-dot"></span>
-      <span id="lives-text">Lives: 6</span>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <!-- Lives -->
+        <div class="lives">
+          <span class="lives-dot"></span>
+          <span id="lives-text">Lives: 6</span>
+        </div>
+
+        <!-- Timer -->
+        <div class="lives" style="gap:10px;">
+          <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+            <input id="timer-enabled" type="checkbox" />
+            <span>Timer</span>
+          </label>
+
+          <label style="display:inline-flex;align-items:center;gap:6px;">
+            <span>Sec</span>
+            <input
+              id="timer-seconds"
+              type="number"
+              min="5"
+              max="999"
+              step="1"
+              value="60"
+              style="width:72px;padding:4px 6px;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:rgba(15,23,42,.8);color:var(--text);"
+            />
+          </label>
+
+          <span id="timer-text" style="font-variant-numeric: tabular-nums;">⏱️ --</span>
+        </div>
+      </div>
     </div>
-
-    <!-- Timer -->
-    <div class="lives" style="gap:10px;">
-      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
-        <input id="timer-enabled" type="checkbox" />
-        <span>Timer</span>
-      </label>
-
-      <label style="display:inline-flex;align-items:center;gap:6px;">
-        <span>Sec</span>
-        <input
-          id="timer-seconds"
-          type="number"
-          min="5"
-          max="999"
-          step="1"
-          value="60"
-          style="width:72px;padding:4px 6px;border-radius:10px;border:1px solid rgba(148,163,184,.35);background:rgba(15,23,42,.8);color:var(--text);"
-        />
-      </label>
-
-      <span id="timer-text" style="font-variant-numeric: tabular-nums;">⏱️ --</span>
-    </div>
-  </div>
-</div>
 
     <div class="board">
       <section class="hangman" aria-hidden="true">
@@ -436,274 +354,337 @@
     </div>
 
     <div class="footer">
-      <button class="btn" id="new-game-btn">
+      <button class="btn" id="new-game-btn" type="button">
         <span>New word</span>
       </button>
       <div class="message" id="message"></div>
     </div>
   </main>
-<script>
-const STORAGE_KEYS = {
-  TIMER_ENABLED: "hangman_timer_enabled",
-  TIMER_SECONDS: "hangman_timer_seconds"
-};
 
-function saveTimerSettings() {
-  localStorage.setItem(
-    STORAGE_KEYS.TIMER_ENABLED,
-    timerEnabledEl.checked ? "1" : "0"
-  );
-  localStorage.setItem(
-    STORAGE_KEYS.TIMER_SECONDS,
-    timerSecondsEl.value
-  );
-}
+  <script>
+    // -----------------------------
+    // Config / State
+    // -----------------------------
+    const MAX_WRONG_GUESSES = 6;
 
-function loadTimerSettings() {
-  const enabled = localStorage.getItem(STORAGE_KEYS.TIMER_ENABLED);
-  const seconds = localStorage.getItem(STORAGE_KEYS.TIMER_SECONDS);
+    // words.json will load into this.
+    let WORDS = [];
 
-  if (enabled !== null) {
-    timerEnabledEl.checked = enabled === "1";
-  }
+    let currentWord = "";
+    let currentHint = "";
 
-  if (seconds !== null && !isNaN(seconds)) {
-    timerSecondsEl.value = seconds;
-  }
-}
-  
-  // We will load this from words.json
-  let WORDS = [];
+    let correctLetters = new Set();
+    let guessedLetters = new Set();
+    let wrongGuesses = 0;
+    let gameOver = false;
 
-  const MAX_WRONG_GUESSES = 6;
+    // -----------------------------
+    // DOM
+    // -----------------------------
+    const wordEl = document.getElementById("word");
+    const statusEl = document.getElementById("status");
+    const keyboardEl = document.getElementById("keyboard");
+    const messageEl = document.getElementById("message");
+    const livesTextEl = document.getElementById("lives-text");
+    const hintTextEl = document.getElementById("hint-text");
+    const newGameBtn = document.getElementById("new-game-btn");
 
-  const wordEl = document.getElementById("word");
-  const statusEl = document.getElementById("status");
-  const keyboardEl = document.getElementById("keyboard");
-  const messageEl = document.getElementById("message");
-  const livesTextEl = document.getElementById("lives-text");
-  const hintTextEl = document.getElementById("hint-text");
-  const newGameBtn = document.getElementById("new-game-btn");
-  const timerEnabledEl = document.getElementById("timer-enabled");
-  const timerSecondsEl = document.getElementById("timer-seconds");
-  const timerTextEl = document.getElementById("timer-text");
-  const figureParts = Array.from(
-    document.querySelectorAll(".figure-part")
-  );
+    const timerEnabledEl = document.getElementById("timer-enabled");
+    const timerSecondsEl = document.getElementById("timer-seconds");
+    const timerTextEl = document.getElementById("timer-text");
 
-  let currentWord = "";
-  let currentHint = "";
-  let correctLetters = new Set();
-  let guessedLetters = new Set();
-  let wrongGuesses = 0;
-  let gameOver = false;
-  // --- TIMER STATE ---
-let timerId = null;
-let timeLeft = 0;
-let timerStarted = false;
+    const figureParts = Array.from(document.querySelectorAll(".figure-part"));
 
-function clearTimer() {
-  if (timerId) {
-    clearInterval(timerId);
-    timerId = null;
-  }
-  timerStarted = false;
-}
+    // -----------------------------
+    // Timer + persistence
+    // -----------------------------
+    const STORAGE_KEYS = {
+      TIMER_ENABLED: "hangman_timer_enabled",
+      TIMER_SECONDS: "hangman_timer_seconds"
+    };
 
-function renderTimer() {
-  if (!timerEnabledEl.checked) {
-    timerTextEl.textContent = "⏱️ --";
-    return;
-  }
-  timerTextEl.textContent = `⏱️ ${timeLeft}s`;
-}
+    let timerId = null;
+    let timeLeft = 0;
+    let timerStarted = false;
 
-function startTimerIfNeeded() {
-  // Only start if enabled, not already started, and game is active
-  if (!timerEnabledEl.checked) return;
-  if (gameOver) return;
-  if (timerStarted) return;
-
-  // Read seconds from input (with safety)
-  const seconds = parseInt(timerSecondsEl.value, 10);
-  timeLeft = Number.isFinite(seconds) ? Math.max(5, seconds) : 60;
-
-  timerStarted = true;
-  renderTimer();
-
-  timerId = setInterval(() => {
-    if (gameOver) {
-      clearTimer();
-      return;
+    function clearTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+      timerStarted = false;
     }
 
-    timeLeft -= 1;
+    function renderTimer() {
+      if (!timerEnabledEl.checked) {
+        timerTextEl.textContent = "⏱️ --";
+        return;
+      }
+      timerTextEl.textContent = `⏱️ ${timeLeft}s`;
+    }
+
+    function readTimerSecondsSafe() {
+      const n = parseInt(timerSecondsEl.value, 10);
+      if (!Number.isFinite(n)) return 60;
+      return Math.max(5, Math.min(999, n));
+    }
+
+    function saveTimerSettings() {
+      localStorage.setItem(STORAGE_KEYS.TIMER_ENABLED, timerEnabledEl.checked ? "1" : "0");
+      localStorage.setItem(STORAGE_KEYS.TIMER_SECONDS, String(readTimerSecondsSafe()));
+    }
+
+    function loadTimerSettings() {
+      const enabled = localStorage.getItem(STORAGE_KEYS.TIMER_ENABLED);
+      const seconds = localStorage.getItem(STORAGE_KEYS.TIMER_SECONDS);
+
+      if (enabled !== null) timerEnabledEl.checked = enabled === "1";
+
+      const n = parseInt(seconds, 10);
+      if (Number.isFinite(n)) timerSecondsEl.value = String(Math.max(5, Math.min(999, n)));
+    }
+
+    function startTimerIfNeeded() {
+      if (!timerEnabledEl.checked) return;
+      if (gameOver) return;
+      if (timerStarted) return;
+
+      timeLeft = readTimerSecondsSafe();
+      timerStarted = true;
+      renderTimer();
+
+      timerId = setInterval(() => {
+        if (gameOver) {
+          clearTimer();
+          return;
+        }
+
+        timeLeft -= 1;
+        renderTimer();
+
+        if (timeLeft <= 0) {
+          clearTimer();
+          endGame(false, "⏰ Time's up!");
+        }
+      }, 1000);
+    }
+
+    // Hook up timer controls
+    loadTimerSettings();
     renderTimer();
 
-    if (timeLeft <= 0) {
+    timerEnabledEl.addEventListener("change", () => {
+      saveTimerSettings();
       clearTimer();
-      endGame(false); // time ran out
-      messageEl.innerHTML = `⏰ Time's up! The word was <span class="answer">${currentWord}</span>.`;
-      messageEl.className = "message lose";
-    }
-  }, 1000);
-}
-
-  async function loadWords() {
-    try {
-      const response = await fetch("words.json");
-      if (!response.ok) {
-        throw new Error("Failed to load words.json");
-      }
-      const data = await response.json();
-      // Basic sanity check
-      if (!Array.isArray(data) || data.length === 0) {
-        throw new Error("words.json is empty or invalid");
-      }
-      WORDS = data;
-      console.log(`Loaded ${WORDS.length} words.`);
-      startNewGame();
-    } catch (error) {
-      console.error(error);
-      messageEl.textContent = "Error loading word list. Using fallback words.";
-      messageEl.className = "message lose";
-
-      // Fallback minimal list if something goes wrong
-      WORDS = [
-        { word: "fallback", hint: "Fallback word list." },
-        { word: "error", hint: "Something went wrong loading words." }
-      ];
-      startNewGame();
-    }
-  }
-
-  function pickRandomWord() {
-    const random = WORDS[Math.floor(Math.random() * WORDS.length)];
-    return random;
-  }
-
-  function setupKeyboard() {
-    keyboardEl.innerHTML = "";
-    const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-    letters.forEach((letter) => {
-      const btn = document.createElement("button");
-      btn.textContent = letter;
-      btn.className = "key";
-      btn.addEventListener("click", () => handleGuess(letter, btn));
-      keyboardEl.appendChild(btn);
+      timeLeft = 0;
+      renderTimer();
     });
-  }
 
-  function updateWordDisplay() {
-    wordEl.innerHTML = "";
-    currentWord.split("").forEach((letter) => {
-      const span = document.createElement("span");
-      span.className = "letter-box";
-      if (letter === " ") {
-        span.textContent = " ";
-        span.style.borderBottom = "none";
-      } else if (correctLetters.has(letter)) {
-        span.textContent = letter;
-        span.classList.add("revealed");
+    timerSecondsEl.addEventListener("change", () => {
+      // Don’t force-start timer; just save & reset display
+      saveTimerSettings();
+      clearTimer();
+      timeLeft = 0;
+      renderTimer();
+    });
+
+    // -----------------------------
+    // Words loading
+    // -----------------------------
+    async function loadWords() {
+      try {
+        const response = await fetch("words.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to load words.json");
+        const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) throw new Error("words.json empty/invalid");
+        WORDS = data;
+        startNewGame();
+      } catch (err) {
+        console.error(err);
+        messageEl.textContent = "Error loading word list. Using fallback words.";
+        messageEl.className = "message lose";
+        WORDS = [
+          { word: "fallback", hint: "Fallback word list." },
+          { word: "error", hint: "Something went wrong loading words." },
+          { word: "hangman", hint: "Classic letter guessing game." }
+        ];
+        startNewGame();
+      }
+    }
+
+    function pickRandomWord() {
+      const random = WORDS[Math.floor(Math.random() * WORDS.length)];
+      // Normalize structure
+      const word = (random?.word ?? "").toString();
+      const hint = (random?.hint ?? "No hint available.").toString();
+      return { word, hint };
+    }
+
+    // -----------------------------
+    // Rendering
+    // -----------------------------
+    function setupKeyboard() {
+      keyboardEl.innerHTML = "";
+      const letters = "abcdefghijklmnopqrstuvwxyz".split("");
+      for (const letter of letters) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = letter;
+        btn.className = "key";
+        btn.addEventListener("click", () => handleGuess(letter, btn));
+        keyboardEl.appendChild(btn);
+      }
+    }
+
+    function updateWordDisplay() {
+      wordEl.innerHTML = "";
+      for (const letter of currentWord) {
+        const span = document.createElement("span");
+        span.className = "letter-box";
+
+        if (letter === " ") {
+          span.textContent = " ";
+          span.style.borderBottom = "none";
+        } else if (correctLetters.has(letter)) {
+          span.textContent = letter;
+          span.classList.add("revealed");
+        } else {
+          span.textContent = "";
+        }
+
+        wordEl.appendChild(span);
+      }
+    }
+
+    function updateStatus() {
+      statusEl.innerHTML = `Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}`;
+      livesTextEl.textContent = `Lives: ${Math.max(0, MAX_WRONG_GUESSES - wrongGuesses)}`;
+
+      figureParts.forEach((part, index) => {
+        if (index < wrongGuesses) part.classList.add("visible");
+        else part.classList.remove("visible");
+      });
+    }
+
+    function checkWin() {
+      return currentWord
+        .split("")
+        .filter(c => c !== " ")
+        .every(c => correctLetters.has(c));
+    }
+
+    function disableAllKeys() {
+      keyboardEl.querySelectorAll("button").forEach(btn => (btn.disabled = true));
+    }
+
+    function endGame(win, prefixText = "") {
+      gameOver = true;
+      clearTimer();
+      renderTimer();
+
+      const answerHtml = `<span class="answer">${currentWord}</span>`;
+      const lead = prefixText ? `${prefixText} ` : "";
+
+      if (win) {
+        messageEl.innerHTML = `${lead}You win! The word was ${answerHtml}.`;
+        messageEl.className = "message win";
       } else {
-        span.textContent = "";
+        messageEl.innerHTML = `${lead}You lost. The word was ${answerHtml}.`;
+        messageEl.className = "message lose";
       }
-      wordEl.appendChild(span);
-    });
-  }
 
-  function updateStatus() {
-    statusEl.innerHTML = `
-      Wrong guesses: <strong>${wrongGuesses}</strong> / ${MAX_WRONG_GUESSES}
-    `;
-    livesTextEl.textContent = `Lives: ${MAX_WRONG_GUESSES - wrongGuesses}`;
-    figureParts.forEach((part, index) => {
-      if (index < wrongGuesses) {
-        part.classList.add("visible");
+      disableAllKeys();
+      updateWordDisplay(); // reveal via gameOver? We reveal by simply leaving as-is; keep consistent.
+    }
+
+    // -----------------------------
+    // Game flow
+    // -----------------------------
+    function startNewGame() {
+      if (!WORDS || WORDS.length === 0) {
+        messageEl.textContent = "No words available.";
+        messageEl.className = "message lose";
+        return;
+      }
+
+      clearTimer();
+      timeLeft = 0;
+      renderTimer();
+
+      const { word, hint } = pickRandomWord();
+      currentWord = word.toLowerCase();
+      currentHint = hint || "No hint available.";
+
+      correctLetters = new Set();
+      guessedLetters = new Set();
+      wrongGuesses = 0;
+      gameOver = false;
+
+      hintTextEl.textContent = `Hint: ${currentHint}`;
+      messageEl.textContent = "Guess the word by choosing letters.";
+      messageEl.className = "message";
+
+      setupKeyboard();
+      updateWordDisplay();
+      updateStatus();
+    }
+
+    function findKeyButton(letter) {
+      return keyboardEl.querySelectorAll("button")[letter.charCodeAt(0) - 97] || null;
+    }
+
+    function handleGuess(letter, btnOrNull) {
+      if (gameOver) return;
+
+      letter = (letter || "").toLowerCase();
+      if (!/^[a-z]$/.test(letter)) return;
+      if (guessedLetters.has(letter)) return;
+
+      // Start timer on the first actual guess
+      startTimerIfNeeded();
+
+      guessedLetters.add(letter);
+
+      const isCorrect = currentWord.includes(letter);
+
+      if (isCorrect) {
+        correctLetters.add(letter);
+        if (btnOrNull) btnOrNull.classList.add("correct");
       } else {
-        part.classList.remove("visible");
+        wrongGuesses += 1;
+        if (btnOrNull) btnOrNull.classList.add("wrong");
       }
+
+      if (btnOrNull) btnOrNull.disabled = true;
+
+      updateWordDisplay();
+      updateStatus();
+
+      if (checkWin()) {
+        endGame(true);
+      } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
+        endGame(false);
+      }
+    }
+
+    // Button
+    newGameBtn.addEventListener("click", startNewGame);
+
+    // Physical keyboard support
+    window.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key;
+      if (!k || k.length !== 1) return;
+      const letter = k.toLowerCase();
+      if (!/^[a-z]$/.test(letter)) return;
+      const btn = findKeyButton(letter);
+      // If button is disabled, it means already guessed
+      if (btn && btn.disabled) return;
+      handleGuess(letter, btn);
     });
-  }
 
-  function checkWin() {
-    return currentWord
-      .split("")
-      .filter((c) => c !== " ")
-      .every((c) => correctLetters.has(c));
-  }
-
-  function endGame(win) {
-    gameOver = true;
-    const answerHtml = `<span class="answer">${currentWord}</span>`;
-
-    if (win) {
-      messageEl.innerHTML = `You win! The word was ${answerHtml}.`;
-      messageEl.className = "message win";
-    } else {
-      messageEl.innerHTML = `You lost. The word was ${answerHtml}.`;
-      messageEl.className = "message lose";
-    }
-
-    // Disable all keys
-    keyboardEl.querySelectorAll("button").forEach((btn) => {
-      btn.disabled = true;
-    });
-  }
-
-  function handleGuess(letter, btn) {
-    if (gameOver || guessedLetters.has(letter)) return;
-    guessedLetters.add(letter);
-
-    const isCorrect = currentWord.includes(letter);
-    if (isCorrect) {
-      correctLetters.add(letter);
-      btn.classList.add("correct");
-    } else {
-      wrongGuesses++;
-      btn.classList.add("wrong");
-    }
-
-    btn.disabled = true;
-    updateWordDisplay();
-    updateStatus();
-
-    if (checkWin()) {
-      endGame(true);
-    } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
-      endGame(false);
-    }
-  }
-
-  function startNewGame() {
-    if (!WORDS || WORDS.length === 0) {
-      messageEl.textContent = "No words available.";
-      messageEl.className = "message lose";
-      return;
-    }
-
-    const { word, hint } = pickRandomWord();
-    currentWord = word.toLowerCase();
-    currentHint = hint || "No hint available.";
-    correctLetters = new Set();
-    guessedLetters = new Set();
-    wrongGuesses = 0;
-    gameOver = false;
-
-    hintTextEl.textContent = `Hint: ${currentHint}`;
-    messageEl.textContent = "Guess the word by choosing letters.";
-    messageEl.className = "message";
-
-    setupKeyboard();
-    updateWordDisplay();
-    updateStatus();
-  }
-
-  newGameBtn.addEventListener("click", startNewGame);
-
-  // Load words and then start the first game
-  loadWords();
-</script>
-  
+    // Start
+    loadWords();
+  </script>
 </body>
 </html>
